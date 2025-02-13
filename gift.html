@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gift for my Cielo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sniglet&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/gift.gif" type="image/gif">
+    <style>
+
+        body {
+            display: flex;
+            font-family: "sniglet", "serif";
+            background-image: url("images/battle-bg.gif");
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            height: 90%;
+            overflow: hidden;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .orientationScreen {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgb(253, 216, 222);
+        }
+
+        .message {
+            text-align: center;
+            color: rgb(219, 112, 147);
+            padding: 20px;
+            font-size: 24px;
+            z-index: 10;
+            margin-top: 200px;
+            position: absolute;
+            margin-bottom: 10px;
+        }
+
+        .rotateGif {
+            width: 50%;
+            height: 30%;
+            align-self: center;
+            margin-left: 100px;
+            margin-top: 180px;
+        }
+
+        /* WASD Button Styles */
+        .wasd-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            bottom: 20px;
+            z-index: 10;
+        }
+
+        .wasd-buttons button {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            margin: 5px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .wasd-buttons button.pressed {
+            background-color: rgba(255, 0, 0, 0.7);
+        }
+
+        .warriorCatIdle {
+            height: 300px;
+            position: fixed;
+            bottom: 0;
+            transition: transform 0.1s;
+            z-index: 5;
+        }
+        
+        .boss{
+            position: fixed;
+            right: 0;
+            bottom: 0;
+        }
+
+        .princess {
+            position: fixed;
+            right: 0;
+            width: 10%;
+            margin-top: 700px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="orientationScreen" id="orientationMessage">
+        <p class="message">rotate your phone to landscape mode pls!</p>
+        <img class="rotateGif" src="images/rotate-phone.gif">
+    </div>
+
+    <!-- WASD buttons (only visible on PC) -->
+    <div class="wasd-buttons" id="wasdButtons">
+        <button id="wBtn">W</button>
+        <div>
+            <button id="aBtn">A</button>
+            <button id="sBtn">S</button>
+            <button id="dBtn">D</button>
+        </div>
+    </div>
+    <img class="warriorCatIdle" src="images/warrior-cat-idle.png">
+    <img class="boss" src="images/boss.png">
+    <img class="princess" src="images/cry-milk.gif">
+
+    <audio autoplay loop preload="auto" type="audio" src="images/battle-ost.mp3"></audio>
+
+    <script>
+        const orientationMessage = document.getElementById('orientationMessage');
+        const catIdle = document.getElementsByClassName('warriorCatIdle')[0];
+        const wasdButtons = document.getElementById('wasdButtons');
+        const wBtn = document.getElementById('wBtn');
+        const aBtn = document.getElementById('aBtn');
+        const sBtn = document.getElementById('sBtn');
+        const dBtn = document.getElementById('dBtn');
+
+        // Check device type and show/hide joystick or WASD buttons
+        const isPC = window.innerWidth > 768;
+
+        if (isPC) {
+            wasdButtons.style.display = 'flex'; // Show WASD buttons on PC
+        }
+
+        function checkOrientation () {
+            if (window.innerHeight > window.innerWidth) {
+                orientationMessage.style.display = 'flex';
+            } else {
+                orientationMessage.style.display = 'none';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            checkOrientation();
+        });
+
+        window.addEventListener('resize', checkOrientation);
+
+        let catX = 0;
+        let catY = 0;
+
+        // Move cat based on WASD buttons
+        function moveCat(direction) {
+            const moveDistance = 10;
+            switch(direction) {
+                case 'w': // Move up
+                    catY -= moveDistance;
+                    break;
+                case 'a': // Move left
+                    catX -= moveDistance;
+                    break;
+                case 's': // Move down
+                    catY += moveDistance;
+                    break;
+                case 'd': // Move right
+                    catX += moveDistance;
+                    break;
+            }
+
+            // Apply transformation to the cat
+            catIdle.style.transform = `translate(${catX}px, ${catY}px)`;
+        }
+
+        // Button Pressing Effects
+        function buttonPressEffect(buttonId) {
+            const button = document.getElementById(buttonId);
+            button.classList.add('pressed');
+        }
+
+        function buttonReleaseEffect(buttonId) {
+            const button = document.getElementById(buttonId);
+            button.classList.remove('pressed');
+        }
+
+        // WASD Button Events
+        wBtn.addEventListener('mousedown', () => {
+            moveCat('w');
+            buttonPressEffect('wBtn');
+        });
+        wBtn.addEventListener('mouseup', () => buttonReleaseEffect('wBtn'));
+        wBtn.addEventListener('touchstart', () => {
+            moveCat('w');
+            buttonPressEffect('wBtn');
+        });
+        wBtn.addEventListener('touchend', () => buttonReleaseEffect('wBtn'));
+
+        aBtn.addEventListener('mousedown', () => {
+            moveCat('a');
+            buttonPressEffect('aBtn');
+        });
+        aBtn.addEventListener('mouseup', () => buttonReleaseEffect('aBtn'));
+        aBtn.addEventListener('touchstart', () => {
+            moveCat('a');
+            buttonPressEffect('aBtn');
+        });
+        aBtn.addEventListener('touchend', () => buttonReleaseEffect('aBtn'));
+
+        sBtn.addEventListener('mousedown', () => {
+            moveCat('s');
+            buttonPressEffect('sBtn');
+        });
+        sBtn.addEventListener('mouseup', () => buttonReleaseEffect('sBtn'));
+        sBtn.addEventListener('touchstart', () => {
+            moveCat('s');
+            buttonPressEffect('sBtn');
+        });
+        sBtn.addEventListener('touchend', () => buttonReleaseEffect('sBtn'));
+
+        dBtn.addEventListener('mousedown', () => {
+            moveCat('d');
+            buttonPressEffect('dBtn');
+        });
+        dBtn.addEventListener('mouseup', () => buttonReleaseEffect('dBtn'));
+        dBtn.addEventListener('touchstart', () => {
+            moveCat('d');
+            buttonPressEffect('dBtn');
+        });
+        dBtn.addEventListener('touchend', () => buttonReleaseEffect('dBtn'));
+
+        // Keyboard event (for W, A, S, D keys)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'w') {
+                moveCat('w');
+                buttonPressEffect('wBtn');
+            } else if (e.key === 'a') {
+                moveCat('a');
+                buttonPressEffect('aBtn');
+            } else if (e.key === 's') {
+                moveCat('s');
+                buttonPressEffect('sBtn');
+            } else if (e.key === 'd') {
+                moveCat('d');
+                buttonPressEffect('dBtn');
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'w') buttonReleaseEffect('wBtn');
+            if (e.key === 'a') buttonReleaseEffect('aBtn');
+            if (e.key === 's') buttonReleaseEffect('sBtn');
+            if (e.key === 'd') buttonReleaseEffect('dBtn');
+        });
+
+    </script>
+
+</body>
+</html>
