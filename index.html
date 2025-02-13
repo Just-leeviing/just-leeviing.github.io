@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Day</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sniglet&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/milk-heart.gif" type="image/gif">
+
+    <style>
+        /* loading screen*/
+        /* .loadingScreen{
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background-color: #fff !important;
+            z-index: 9999999 !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            flex-direction: column !important;
+        }
+        .loadingBar{
+            height: 100%;
+            width: 0%;
+            background-color: #e3e3e3;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 20px;
+            z-index: inherit;
+        }
+        .loadingProgress{
+            height: 100%;
+            width: 0%;
+            background-color: pink;
+            border-radius: 5px;
+            z-index: inherit;
+        } */
+        /* main content */
+        body {
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: white;
+            font-family: "sniglet", "serif";
+            /* display: none; */
+        }
+        button {
+            text-align: center;
+            max-width: 90%;
+            border-radius: 10px;
+            border-width: 2px !important;
+            position: relative;
+        }
+        .dialougeBox {
+            background-color: rgba(253, 216, 222, 0.7); 
+            border: 2px solid rgba(219, 112, 147, 0.7); 
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            width: 300px;
+            height: 60px;
+            position: relative;
+            margin-top: 10px;
+            z-index: 0;
+        }
+
+        .yesButton {
+            background-color: #7DDA58;
+            border: solid;
+            border-color: #43772f;
+            margin-left: -50px;
+            position: absolute;
+        }
+        .noButton {
+            background-color: #e63b3e;
+            border: solid;
+            border-color: #af1013;
+            position: relative;
+        }
+        .valentineQuestion {
+            margin: 0;
+            opacity: 100% !important;
+        }
+        /* click anywhere animation*/
+        #clickAny {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            margin: 0;
+            padding: 5%;
+            color: rgb(219, 112, 147);
+            opacity: 0;
+            animation: fadeInOut 1.5s infinite;
+        }
+        @keyframes fadeInOut { 
+            0% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .clickAny_invisible {
+            display: none;
+        }
+        .gif {
+            display: block;
+            margin: 0 auto;
+            max-width: 150px;
+            top: 100px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-52%);
+            z-index: 1;
+        }
+
+
+    </style>
+</head>
+<body>
+
+    <!-- <div class="loadingScreen">
+        <h2>Loading...</h2>
+        <div class="loadingBar">
+            <div class="loadingProgress"></div>
+        </div>
+
+    </div> -->
+
+    <img class="gif" src="images/milk-hug.gif">
+    <div class="dialougeBox">
+        <label name="yes or no"  class="valentineQuestion">Are you Jasmine's Valentine?</label>
+        <br> <br>
+        <div class="responseButtons">
+             <button class="yesButton">Mhm</button> <button class="noButton">Nope</button>
+        </div>
+        <h6 id="clickAny" class="clickAny_invisible">click or [space]</h6>
+    </div>
+    <audio autoplay loop preload="auto" type="audio" src="images/Cute Circus.mp3"></audio>
+
+    <script type="module">
+        const yesButton = document.getElementsByClassName('yesButton')[0];
+        const noButton = document.getElementsByClassName('noButton')[0];
+        const responseButtons = document.getElementsByClassName('responseButtons')[0];
+        const valentineQuestion = document.getElementsByClassName('valentineQuestion')[0];
+        const dialougeBox = document.getElementsByClassName('dialougeBox')[0];
+        const clickAny = document.getElementById('clickAny');
+        // const loadingScreen = document.getElementsByClassName('loadingScreen')[0];
+        // const loadingProgress = document.getElementsByClassName('loadingProgress')[0];
+        const gif = document.getElementsByClassName('gif')[0];
+        const audio = document.getElementsByTagName('audio');
+
+        let noClickCount = 0;
+        let buttonHeight = 48;
+        let buttonWidth = 100;
+        let fontSize = 20;
+
+        const noMessages = [
+            "Nope", 
+            "Whaaaaaa", 
+            "Really???", 
+            "Nowayy :((", 
+            "You haven't asked me??", 
+            "Whyyyyyy",
+            "I'm gonna cry... TT"
+        ]
+
+        const messages = [
+            "Yayy!!! :3", 
+            "I love you soo much hubbbyy❤❤",
+            "Happy Valentines!!",
+            "Here's a gift for you! <3"
+        ];
+
+        const noGifs = [
+            "images/fuming-milk.gif",
+            "images/fuming-milk.gif",
+            "images/sulk-milk.gif",
+            "images/sulk-milk.gif",
+            "images/angry-milk.gif",
+            "images/angry-milk.gif",
+            "images/cry-milk.gif"
+        ]
+
+        const yesGifs = [
+            "images/excited-milk.gif",
+            "images/milk-huug.gif",
+            "images/milk-huug.gif",
+            "images/gift.gif"
+        ]
+
+        let currentMessageIndex = -1;
+        let canClickDialogue = false;
+
+        // let loadProgress = 0;
+        // const loadInterval = setInterval(() => {
+        //     loadProgress += 2;
+        //     loadingProgress.style.width = `${loadProgress}%`;
+        //     console.log(loadProgress);
+
+        //     if (loadProgress >= 100){
+        //         clearInterval(loadInterval);
+        //         loadingScreen.style.display = 'none';
+        //         document.body.style.display = 'flex';
+        //     }
+        // }, 100);
+
+        noButton.addEventListener('click', function(){
+            audio[0].src = "images/vine-boom.mp3";
+            
+            if (noClickCount < (noMessages.length)-1){
+                noClickCount++;
+                gif.src = noGifs[noClickCount];
+
+                buttonHeight += 50;
+                buttonWidth += 50;
+                fontSize += 10;
+
+                yesButton.style.height = `${buttonHeight}px`;
+                yesButton.style.width = `${buttonWidth}px`;
+                yesButton.style.fontSize = `${fontSize}px`;
+ 
+                if (noClickCount < noMessages.length){
+                    noButton.textContent = noMessages[noClickCount];
+                }
+            }
+        });
+
+        yesButton.addEventListener('click', () => {
+            audio[0].src = "images/Cute Circus.mp3";
+            valentineQuestion.textContent = messages[currentMessageIndex];
+            responseButtons.style.display = 'none';
+            canClickDialogue = true;
+            clickAny.classList.remove('clickAny_invisible');
+
+            document.body.style.backgroundImage = "url('images/pink-hearts-gif.gif')";
+            document.body.style.backgroundSize = "cover";
+            document.body.style.backgroundRepeat = "repeat";
+        });
+
+        function typeMessage(message){
+            if (currentMessageIndex < messages.length){
+                valentineQuestion.textContent = '';
+                let i = 0;
+                const typingSpeed = 150;
+                const typingInterval = setInterval(() => {
+                    if (i < message.length){
+                        valentineQuestion.textContent += message.charAt(i);
+                        i++;
+                    }else{
+                        clearInterval(typingInterval);
+                        canClickDialogue = true;
+                        clickAny.classList.remove('clickAnyInvisible')
+                    }
+                }, typingSpeed);
+            }
+        }    
+        
+
+        dialougeBox.addEventListener('click', () => {
+            if (canClickDialogue){
+                currentMessageIndex++;
+                
+                if (currentMessageIndex < messages.length){
+                    gif.src = yesGifs[currentMessageIndex]
+                    typeMessage(messages[currentMessageIndex]);
+                    canClickDialogue = false;
+                } 
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (canClickDialogue && event.key === " ") {  // Spacebar key
+                currentMessageIndex++;
+                
+                if (currentMessageIndex < messages.length) {
+                    gif.src = yesGifs[currentMessageIndex]
+                    typeMessage(messages[currentMessageIndex]);
+                    canClickDialogue = false;
+                } 
+            }
+        });
+
+        gif.addEventListener('click', () => {
+            if (gif.src.includes("images/gift.gif")) {
+                window.open("gift.html","_self")
+            }
+        });
+
+
+
+    </script>
+</body>
+</html>

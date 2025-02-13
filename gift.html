@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gift for my Cielo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sniglet&display=swap" rel="stylesheet">
+    <style>
+
+        body {
+            display: flex;
+            font-family: "sniglet", "serif";
+            background-image: url("images/battle-bg.gif");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .orientationScreen {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgb(253, 216, 222);
+        }
+        .message{
+            text-align: center;
+            color: rgb(219, 112, 147);
+            padding: 20px;
+            font-size: 24px;
+            z-index: 10;
+            margin-top: 200px;
+            position: absolute;
+            margin-bottom: 10px;
+        }
+        .rotateGif{
+            width: 50%;
+            height: 30%;
+            align-self: center;
+            margin-left: 100px;
+            margin-top: 180px;
+
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="orientationScreen" id="orientationMessage">
+        <p class="message">rotate your phone to landscape mode pls!</p>
+        <img class="rotateGif" src="images/rotate-phone.gif">
+    </div>
+    
+    <script>
+        const orientationMessage = document.getElementById('orientationMessage');
+
+        function checkOrientation (){
+            if (window.innerHeight > window.innerWidth) {
+                orientationMessage.style.display = 'flex';
+            } else {
+                orientationMessage.style.display = 'none';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            checkOrientation;
+        });
+
+        window.addEventListener('resize', checkOrientation);
+    </script>
+
+</body>
+</html>
